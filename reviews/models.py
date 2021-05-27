@@ -15,7 +15,7 @@ class Review(core_models.TimeStampedModel):
     location = models.IntegerField()
     check_in = models.IntegerField()
     value = models.IntegerField()
-    uer = models.ForeignKey(
+    user = models.ForeignKey(
         "users.User", related_name="reviews", on_delete=models.CASCADE
     )
     room = models.ForeignKey(
