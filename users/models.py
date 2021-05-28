@@ -37,19 +37,10 @@ class User(AbstractUser):
         (CURRENCY_KRW, "KRW"),
         (CURRENCY_PESO, "PESO"),
     )
-    avatar = models.ImageField()
-    gender = models.CharField(
-        choices=GENDER_CHOICE,
-        max_length=10,
-    )
-    bio = models.TextField(default="")
-    birthdate = models.DateField(null=True)
-    language = models.CharField(
-        choices=LANGUAGE_CHOICES,
-        max_length=2,
-    )
-    currency = models.CharField(
-        choices=CURRENCY_CHOICES,
-        max_length=4,
-    )
+    avatar = models.ImageField(upload_to="avatars", blank=True)
+    gender = models.CharField(choices=GENDER_CHOICE, max_length=10, blank=True)
+    bio = models.TextField(blank=True)
+    birthdate = models.DateField(blank=True, null=True)
+    language = models.CharField(choices=LANGUAGE_CHOICES, max_length=2, blank=True)
+    currency = models.CharField(choices=CURRENCY_CHOICES, max_length=4, blank=True)
     superhost = models.BooleanField(default=False)
