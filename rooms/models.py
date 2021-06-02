@@ -90,6 +90,12 @@ class Room(core_models.TimeStampedModel):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        # self.city = str.capitalize(self.city)
+        self.city = self.city.title()
+        # 두글자 이상 대문자 만들기
+        super().save(*args, **kwargs)
+
     def total_rating(self):
         all_reviews = self.reviews.all()
         all_ratings = 0
