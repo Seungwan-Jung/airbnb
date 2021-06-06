@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from django_seed import Seed
 from rooms import models as room_models
 from users import models as user_models
+from django.contrib.admin.utils import flatten
 
 
 class Command(BaseCommand):
@@ -34,4 +35,14 @@ class Command(BaseCommand):
             },
         )
         seeder.execute()
+        created_photos = seeder.execute()
+        created_clean = flatten(list(created_photos.values()))
+        for pk in created_clean:
+            room = room_models.Room.objects.get(pk=pk)
+            for i in range(3, random.randint(10, 17)):
+                room_models.Photo.objects.create(
+                    caption=seeder.faker.sentence(),
+                    room=room,
+                    file=f"room_photos/{random.randint(1,31)}.webp",
+                )
         self.stdout.write(self.style.SUCCESS(f"{number} rooms created!"))
