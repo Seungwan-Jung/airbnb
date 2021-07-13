@@ -1,13 +1,14 @@
-from django.core import paginator
-from django.shortcuts import render
+from django.core.paginator import Paginator,EmptyPage
 from . import models
-from math import ceil
-from django.core.paginator import Paginator
+from django.shortcuts import render,redirect
 # Create your views here.
 
 def all_rooms(request):
     page = request.GET.get("page",1)
     room_list = models.Room.objects.all()
     paginator = Paginator(room_list,10,orphans=5)
-    rooms = paginator.get_page(int(page))
-    return render(request, "rooms/home.html",{"page":rooms})
+    try:
+        rooms = paginator.get_page(int(page))
+        return render(request, "rooms/home.html",{"page":rooms})
+    except EmptyPage:
+        return redirect("/")
