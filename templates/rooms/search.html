@@ -19,7 +19,11 @@
             <select name="country" id="country">
                 
                 {% for country in countries %}
-                    <option value="{{country.code}}">{{country.name}}</option>
+                    <option value="{{country.code}}"
+                    {% if country.code == s_country %}
+                        selected
+                    {% endif %}
+                    > {{country.name}}</option>
                 {% endfor %}
                     
             </select>
