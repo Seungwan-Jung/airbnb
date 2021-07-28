@@ -2,7 +2,7 @@ from . import models
 from django.shortcuts import render
 from django.views.generic import ListView,DetailView
 from django_countries import countries
-from . import models,form
+from . import models,forms
 
 # Create your views here.
 
@@ -23,4 +23,4 @@ class RoomDetail(DetailView):
 def search(request):
     form = forms.SearchForm()
 
-    return render(request,"rooms/search.html",{"forms":form})
+    return render(request,"rooms/search.html",{"form":form})
