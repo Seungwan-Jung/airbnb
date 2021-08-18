@@ -6,6 +6,7 @@ from . import forms, models
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import FormView
 from django.urls import reverse_lazy
+from django.core.files.base import ContentFile
 # Create your views here.
 
 class LoginView(FormView):
@@ -116,7 +117,7 @@ def kakao_login(request):
     REST_API_KEY = os.environ.get("KAKAO_ID")
     REDIRECT_URI = "http://127.0.0.1:8000/users/login/kakao/callback"
     return redirect(
-        f"https://kauth.kakao.com/oauth/authorize?response_type=code&client_id={REST_API_KEY}&redirect_uri={REDIRECT_URI}&scope=account_email"
+        f"https://kauth.kakao.com/oauth/authorize?response_type=code&client_id={REST_API_KEY}&redirect_uri={REDIRECT_URI}"
     )
 
 class KakaoException(Exception):
@@ -141,13 +142,11 @@ def kakao_callback(request):
         )
         profile_json = profile_request.json()
         email = profile_json.get("kakao_account").get("email")
-        print(profile_json)
         if email is None:
             raise KakaoException()
         properties = profile_json.get("properties")
-        print(properties)
-        # nickname = properties.get("nickname")
-        # profile_image = properties.get("profile_image")
+        nickname = properties.get("nickname")
+        profile_image = properties.get("profile_image")
         try:
             user= models.User.objects.get(email=email)
             if user.login_method != models.User.LOGIN_KAKAO:
@@ -156,12 +155,17 @@ def kakao_callback(request):
             user = models.User.objects.create(
                 email=email,
                 username=email,
-                # first_name = nickname,
+                first_name = nickname,
                 login_method = models.User.LOGIN_KAKAO,
                 email_verified = True,
             )
             user.set_unusable_password()
             user.save()
+            if profile_image is not None:
+                photo_request = requests.get(profile_image)
+                user.avatar.save(
+                    f"{nickname}-avatar.jpeg",ContentFile(photo_request.content)
+                )
         login(request,user)
         return redirect(reverse("core:home"))
     except KakaoException:
