@@ -25,6 +25,7 @@
     "node-sass": "^6.0.1"
   },
   "dependencies": {
+    "glob-parent": "^6.0.1",
     "sass": "^1.38.0",
     "tailwindcss": "^2.2.7"
   }
