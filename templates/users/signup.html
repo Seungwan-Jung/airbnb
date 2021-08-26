@@ -13,30 +13,27 @@
 
         <form method="POST" action="{% url "users:signup" %}">
             {% csrf_token %}
-            {{form.first_name}}
-            {{form.last_name}}
-            {{form.email}}
-
             
-            {% if form.errors %}
+            {% if form.non_field_errors %}
             
-                {% for e in form.errors %}
-                    {{e}}
+                {% for error in form.non_field_errors %}
+                    <span class=" text-red-700 font-medium text-sm">{{error}}</span>
                 {% endfor %}
             {% endif %}
             
             
-            {% if form.email.errors %}
+            {% for field in form %}
                 
+                <div class="input w-full {% if field.errors %}has_error{% endif %}">
+                    {{field}}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                        <span class=" text-red-700 font-medium text-sm">{{error}}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
                 
-                {% for e in form.email.errors %}
-                {{e}}
-                {% endfor %}
-            
-            {% endif %}
-
-            {{form.password}}
-            {{form.password1}}
             <button class="btn bg-red-500 text-white">Sigh Up</button>
         </form>
 
@@ -45,4 +42,4 @@
             <a href="{% url 'users:login' %}" class="text-teal-500 font-medium">Log in</a>
         </div>
     </div>
-{% endblock content %} ``
+{% endblock content %} 
