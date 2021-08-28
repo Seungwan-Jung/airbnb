@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from django.core.files.base import ContentFile
+from django.contrib import messages
 # Create your views here.
 
 class LoginView(FormView):
@@ -124,6 +125,7 @@ class KakaoException(Exception):
 def kakao_callback(request):
     try:
         code = request.GET.get("code")
+        raise KakaoException()
         REST_API_KEY = os.environ.get("KAKAO_ID")
         REDIRECT_URI = "http://127.0.0.1:8000/users/login/kakao/callback"
         token_request = requests.get(
@@ -167,4 +169,5 @@ def kakao_callback(request):
         login(request,user)
         return redirect(reverse("core:home"))
     except KakaoException:
+        messages.error(request, "something went wrong")
         return redirect(reverse("users:login"))
